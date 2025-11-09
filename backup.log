@@ -1,0 +1,106 @@
+Main.sh 
+qq#!/bin/bash 
+ 
+SCRIPTS="$HOME/wipro-capstone/scripts" 
+LOGS="$HOME/wipro-capstone/logs" 
+mkdir -p "$SCRIPTS" "$LOGS" 
+ 
+while true; do 
+    clear 
+    echo "==============================" 
+    echo "Bash Scripting Suite for System Maintenance" 
+    echo "==============================" 
+    echo "1. Backup Documents" 
+    echo "2. Update & Clean System" 
+    echo "3. Monitor System Logs" 
+    echo "4. View All Logs" 
+    echo "5. Exit" 
+    echo "==============================" 
+    read -p "Choose [1-5]: " opt 
+ 
+    case $opt in 
+        1) 
+            echo "Running Backup..." 
+            bash "$SCRIPTS/backup.sh" 
+            ;; 
+        2) 
+            echo "Running System Update..." 
+            bash "$SCRIPTS/update-clean.sh" 
+            ;; 
+        3) 
+            echo "Monitoring Logs..." 
+            bash "$SCRIPTS/logwatch.sh" 
+            ;; 
+        4) 
+            echo "Opening logs..." 
+            if ls "$LOGS"/* 1> /dev/null 2>&1; then 
+                less +G "$LOGS"/* 
+            else 
+                echo "No logs yet. Run other options first." 
+            fi 
+            ;; 
+        5) 
+            echo "Thank you! Suite exiting..." 
+            exit 0 
+            ;; 
+        *) 
+            echo "Invalid option! Try again." 
+            sleep 1 
+            ;; 
+    esac 
+    echo -e "\nPress Enter to continue..." 
+    read 
+done 
+
+
+
+❖ Backup.sh 
+
+
+#!/bin/bashLOG="$HOME/wipro
+capstone/logs/backup.log"DATE=$(date "+%Y-%m
+%d_%H-%M
+%S")SOURCE="$HOME/Documents"DEST="$HOME/B
+ ackups"mkdir -p "$DEST"tar -czf 
+"$DEST/backup_$DATE.tar.gz" "$SOURCE" >> "$LOG" 
+2>&1echo "$(date): Backup completed successfully." 
+>> "$LOG"echo "Backup done! Check $LOG for details."
+
+
+
+❖ Logwatch.sh 
+
+
+#!/bin/bash 
+LOG="$HOME/wipro
+capstone/logs/logwatch.log" 
+SYSLOG="/var/log/syslog" 
+echo "Scanning logs for warnings or 
+errors..." > "$LOG" 
+grep -i "error\|fail\|warning" "$SYSLOG" >> 
+"$LOG" 
+if [ -s "$LOG" ]; then 
+echo " Issues found. Check $LOG for 
+details." 
+else 
+echo "No issues found." 
+fi
+
+
+❖ Update.sh 
+
+
+#!/bin/bash 
+LOG="$HOME/wipro
+capstone/logs/update.log" 
+{ 
+echo "===== System Update Started: $(date) 
+=====" 
+sudo apt update -y && sudo apt upgrade -y 
+sudo apt autoremove -y && sudo apt 
+autoclean -y 
+echo "===== System Update Completed: 
+$(date) =====" 
+} >> "$LOG" 2>&1 
+echo "System updated and cleaned 
+successfully. Check $LOG for details."
